@@ -1,0 +1,24 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.vs/
+.vscode/
+*.DotSettings.user
+
+## Build outputs
+publish/
+publish_msi/
+*.msi
+*.wixpdb
+
+## OS files
+Thumbs.db
+.DS_Store
+
+## Logs
+logs/
+
+## Config with secrets
+appsettings.local.json

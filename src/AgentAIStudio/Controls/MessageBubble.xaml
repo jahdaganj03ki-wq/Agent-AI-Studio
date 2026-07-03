@@ -1,0 +1,20 @@
+<UserControl x:Class="AgentAIStudio.Controls.MessageBubble"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:AgentAIStudio.Controls">
+    <Grid Margin="0,4">
+        <Border x:Name="BubbleBorder"
+                CornerRadius="12" Padding="12,8"
+                MaxWidth="600">
+            <StackPanel Spacing="4">
+                <TextBlock x:Name="RoleLabel" FontSize="11" FontWeight="SemiBold" />
+                <TextBlock x:Name="ContentText" TextWrapping="Wrap" FontSize="14" />
+                <Border x:Name="ImageBorder" Visibility="Collapsed" CornerRadius="8"
+                        MaxWidth="400" MaxHeight="400" HorizontalAlignment="Left">
+                    <Image x:Name="MediaImage" Stretch="Uniform" />
+                </Border>
+                <controls:MediaActionBar x:Name="ActionBar" Visibility="Collapsed" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

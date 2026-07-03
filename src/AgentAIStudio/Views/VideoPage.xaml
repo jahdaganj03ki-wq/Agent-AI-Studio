@@ -1,0 +1,107 @@
+<Page x:Class="AgentAIStudio.Views.VideoPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="using:AgentAIStudio.Controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="320" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Main content -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Padding="16,8" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                <TextBlock Text="Video Generation" FontSize="20" FontWeight="SemiBold" />
+            </Border>
+
+            <ScrollViewer Grid.Row="1" Padding="16,8" VerticalScrollBarVisibility="Auto"
+                          MaxHeight="400">
+                <StackPanel Spacing="8">
+                    <TextBox x:Name="PromptBox"
+                             Text="{x:Bind ViewModel.Prompt, Mode=TwoWay}"
+                             PlaceholderText="Describe the video scene..."
+                             AcceptsReturn="True" Height="80" />
+
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" Content="🖼 Upload Image" Click="OnUploadImage" />
+                        <Button Grid.Column="1" Content="🔄 Advanced" Click="OnAdvancedToggle" />
+                        <Button Grid.Column="2" Content="🎬 Create Video" HorizontalAlignment="Right"
+                                Width="140" Height="40"
+                                Command="{x:Bind ViewModel.CreateVideoCommand}"
+                                IsEnabled="{x:Bind ViewModel.IsCreating, Converter={StaticResource InverseBoolConverter}}" />
+                    </Grid>
+
+                    <!-- Quick aspect ratio presets -->
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Text="Aspect:" VerticalAlignment="Center" FontSize="12" />
+                        <Button Content="16:9" Tag="1152,768" Click="OnAspectClick" FontSize="11" />
+                        <Button Content="9:16" Tag="768,1152" Click="OnAspectClick" FontSize="11" />
+                        <Button Content="1:1" Tag="1024,1024" Click="OnAspectClick" FontSize="11" />
+                        <Button Content="4:3" Tag="1024,768" Click="OnAspectClick" FontSize="11" />
+                        <Button Content="3:4" Tag="768,1024" Click="OnAspectClick" FontSize="11" />
+                    </StackPanel>
+
+                    <controls:AdvancedSettingsPanel x:Name="AdvancedPanel" Visibility="Collapsed" />
+
+                    <TextBlock x:Name="ImageAttachmentLabel" Visibility="Collapsed"
+                               FontSize="12" Opacity="0.7" />
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Video output area -->
+            <Border Grid.Row="2" Padding="16" BorderThickness="0,1,0,0"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
+                <TextBlock Text="Select a completed video from the queue to preview"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Opacity="0.5" />
+            </Border>
+        </Grid>
+
+        <!-- Queue panel -->
+        <Border Grid.Column="1" BorderThickness="1,0,0,0"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Padding="12,8" BorderThickness="0,0,0,1"
+                        BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}">
+                    <Grid>
+                        <TextBlock Text="📋 Queue" FontWeight="SemiBold" />
+                        <Button Content="−" HorizontalAlignment="Right"
+                                Command="{x:Bind ViewModel.ToggleQueueCommand}" />
+                    </Grid>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="8">
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Tasks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:VideoQueueItemControl />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

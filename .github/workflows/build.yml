@@ -1,0 +1,138 @@
+name: Build Agent AI Studio
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore NuGet packages
+        run: dotnet restore src/AgentAIStudio/AgentAIStudio.csproj
+
+      - name: Build (syntax check)
+        run: dotnet build src/AgentAIStudio/AgentAIStudio.csproj --no-restore -c Release /p:Platform=x64
+
+  build-release:
+    needs: validate
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Setup Windows SDK
+        run: |
+          echo "Windows SDK 10.0.26100+ is pre-installed on windows-2022"
+          dir "C:\Program Files (x86)\Windows Kits\10\bin" -Name
+
+      - name: Restore NuGet packages
+        run: dotnet restore src/AgentAIStudio/AgentAIStudio.csproj
+
+      - name: Build Release x64
+        run: |
+          dotnet build src/AgentAIStudio/AgentAIStudio.csproj `
+            --no-restore `
+            -c Release `
+            -p:Platform=x64 `
+            -p:RuntimeIdentifier=win-x64 `
+            -p:WindowsPackageType=None
+
+      - name: Publish self-contained
+        run: |
+          dotnet publish src/AgentAIStudio/AgentAIStudio.csproj `
+            -c Release `
+            -p:Platform=x64 `
+            -p:RuntimeIdentifier=win-x64 `
+            -p:WindowsPackageType=None `
+            -o publish/AgentAIStudio
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: AgentAIStudio-x64
+          path: publish/
+
+  package-msi:
+    needs: build-release
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Install WiX Toolset
+        run: |
+          dotnet tool install --global wix --version 5.0.2
+          wix --version
+
+      - name: Restore NuGet packages
+        run: dotnet restore src/AgentAIStudio/AgentAIStudio.csproj
+
+      - name: Build Release for MSI packaging
+        run: |
+          dotnet publish src/AgentAIStudio/AgentAIStudio.csproj `
+            -c Release `
+            -p:Platform=x64 `
+            -p:RuntimeIdentifier=win-x64 `
+            -p:WindowsPackageType=None `
+            -o publish_msi/AgentAIStudio
+
+      - name: Build MSI installer
+        run: |
+          wix build installers/AgentAIStudio.Setup/Product.wxs `
+            -o AgentAIStudio-x64.msi `
+            -arch x64 `
+            -ext WixToolset.UI.wixext `
+            -ext WixToolset.Util.wixext `
+            -d SourceDir="$(pwd)/publish_msi/AgentAIStudio"
+
+      - name: Upload MSI
+        uses: actions/upload-artifact@v4
+        with:
+          name: AgentAIStudio-Installer
+          path: AgentAIStudio-x64.msi
+
+  upload-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [package-msi]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: AgentAIStudio-Installer
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: AgentAIStudio-x64.msi
+          generate_release_notes: true

@@ -1,0 +1,92 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="Agent AI Studio"
+           Manufacturer="Agent AI Studio"
+           Version="1.0.0"
+           UpgradeCode="A1B2C3D4-E5F6-7890-ABCD-EF1234567890"
+           Scope="perMachine">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Agent AI Studio is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="MainApplication"
+             Title="Agent AI Studio"
+             Level="1"
+             Absent="disallow">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="StartMenuShortcut" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="AppFolder" Name="Agent AI Studio">
+        <ComponentGroup Id="AppFiles" Directory="AppFolder">
+          <Component>
+            <File Id="AgentAIStudioExe"
+                  Name="AgentAIStudio.exe"
+                  Source="!(bind.SourceDir)\AgentAIStudio.exe"
+                  KeyPath="yes" />
+          </Component>
+          <Component>
+            <File Id="AgentAIStudioDll"
+                  Name="AgentAIStudio.dll"
+                  Source="!(bind.SourceDir)\AgentAIStudio.dll"
+                  KeyPath="yes" />
+          </Component>
+          <Component>
+            <File Id="AppSettingsJson"
+                  Name="appsettings.json"
+                  Source="!(bind.SourceDir)\appsettings.json"
+                  KeyPath="yes" />
+          </Component>
+          <Component>
+            <File Id="WinRTHost"
+                  Name="AgentAIStudio.exe.config"
+                  Source="!(bind.SourceDir)\AgentAIStudio.exe.config"
+                  KeyPath="yes" />
+          </Component>
+        </ComponentGroup>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Component Id="StartMenuShortcut" Guid="B2C3D4E5-F6A7-89BC-DEF0-123456789ABC" Directory="ProgramMenuFolder">
+        <Shortcut Id="StartMenuAgentAIStudio"
+                  Name="Agent AI Studio"
+                  Description="Interface for AgnesAI multimodal models"
+                  Target="[AppFolder]AgentAIStudio.exe"
+                  WorkingDirectory="AppFolder" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\AgentAIStudio"
+                       Name="installed"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="C3D4E5F6-A7B8-90CD-EF01-23456789ABCD" Directory="DesktopFolder">
+        <Shortcut Id="DesktopAgentAIStudio"
+                  Name="Agent AI Studio"
+                  Description="Interface for AgnesAI multimodal models"
+                  Target="[AppFolder]AgentAIStudio.exe"
+                  WorkingDirectory="AppFolder" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\AgentAIStudio"
+                       Name="desktop_shortcut"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="AppFolder" />
+
+    <Property Id="WIXUI_INSTALLDIR" Value="AppFolder" />
+
+    <Property Id="ApplicationFolderName" Value="Agent AI Studio" />
+    <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+  </Package>
+</Wix>

@@ -1,0 +1,89 @@
+<Page x:Class="AgentAIStudio.Views.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
+
+    <ScrollViewer Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel Padding="24" Spacing="24" MaxWidth="600">
+            <TextBlock Text="Settings" FontSize="24" FontWeight="SemiBold" />
+
+            <!-- API Key -->
+            <Border CornerRadius="8" Padding="16"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="API Key" FontSize="16" FontWeight="SemiBold" />
+                    <TextBlock Text="Your API key is stored securely in Windows Credential Manager."
+                               FontSize="12" Opacity="0.6" />
+                    <TextBox x:Name="ApiKeyBox" PlaceholderText="Enter your Agnes AI API key"
+                             Text="{x:Bind ViewModel.ApiKey, Mode=TwoWay}"
+                             IsPasswordRevealEnabled="False" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="Save API Key"
+                                Command="{x:Bind ViewModel.SaveApiKeyCommand}" />
+                        <Button Content="Remove API Key"
+                                Command="{x:Bind ViewModel.ClearApiKeyCommand}" />
+                    </StackPanel>
+                    <TextBlock x:Name="StatusLabel" FontSize="12"
+                               Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
+                               Foreground="{ThemeResource SystemControlForegroundAccentBrush}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Theme -->
+            <Border CornerRadius="8" Padding="16"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Appearance" FontSize="16" FontWeight="SemiBold" />
+                    <ToggleSwitch x:Name="ThemeToggle" Header="Dark Mode"
+                                  IsOn="{x:Bind ViewModel.IsDarkTheme, Mode=TwoWay}"
+                                  Toggled="OnThemeToggled" />
+                </StackPanel>
+            </Border>
+
+            <!-- Conversations -->
+            <Border CornerRadius="8" Padding="16"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Saved Conversations" FontSize="16" FontWeight="SemiBold" />
+                    <TextBlock Text="Chat conversations and Image Studio sessions are stored locally."
+                               FontSize="12" Opacity="0.6" />
+                    <Button Content="Refresh" Click="OnRefreshConversations" />
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.ChatConversations}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="{Binding Title}" FontSize="12" />
+                                        <TextBlock Text="{Binding UpdatedAt}" FontSize="10" Opacity="0.5" />
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="✕" FontSize="10"
+                                            Click="OnDeleteConversation"
+                                            Tag="{Binding Id}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- About -->
+            <Border CornerRadius="8" Padding="16"
+                    Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="About" FontSize="16" FontWeight="SemiBold" />
+                    <TextBlock Text="Agent AI Studio v1.0.0" FontSize="12" />
+                    <TextBlock Text="Powered by Agnes AI Models" FontSize="12" Opacity="0.6" />
+                    <HyperlinkButton Content="github.com/jahdaganj03ki-wq/Agent-AI-Studio"
+                                     NavigateUri="https://github.com/jahdaganj03ki-wq/Agent-AI-Studio"
+                                     FontSize="12" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
