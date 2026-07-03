@@ -1,0 +1,24 @@
+<Window x:Class="AgentAIStudio.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:AgentAIStudio.Controls">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <controls:SidebarNav x:Name="Sidebar"
+                             OnCategorySelected="SidebarNav_OnCategorySelected"
+                             Grid.Column="0" />
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Frame x:Name="ContentFrame" Grid.Row="1" />
+        </Grid>
+    </Grid>
+</Window>
