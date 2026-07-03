@@ -48,16 +48,10 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore src/AgentAIStudio/AgentAIStudio.csproj
 
-      - name: Build Release x64
-        run: |
-          dotnet build src/AgentAIStudio/AgentAIStudio.csproj `
-            --no-restore -c Release -p:WindowsPackageType=None 2>&1
-
-      - name: Publish self-contained
+      - name: Build + Publish Release x64
         run: |
           dotnet publish src/AgentAIStudio/AgentAIStudio.csproj `
             -c Release `
-            -p:Platform=x64 `
             -p:RuntimeIdentifier=win-x64 `
             -p:WindowsPackageType=None `
             -o publish/AgentAIStudio
