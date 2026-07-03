@@ -26,7 +26,7 @@ jobs:
         run: dotnet restore src/AgentAIStudio/AgentAIStudio.csproj -p:EnableWindowsTargeting=true
 
       - name: Check code formatting
-        run: dotnet format src/AgentAIStudio/AgentAIStudio.csproj --verify-no-changes
+        run: dotnet format src/AgentAIStudio/AgentAIStudio.csproj --verify-no-changes -p:EnableWindowsTargeting=true
 
   build-release:
     needs: validate
