@@ -40,9 +40,6 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      - name: Install WinUI workload
-        run: dotnet workload install microsoft-windowsappsdk --skip-sign-check
-
       - name: Setup Windows SDK
         run: |
           echo "Windows SDK 10.0.26100+ is pre-installed on windows-2022"
@@ -58,8 +55,7 @@ jobs:
             -c Release `
             -p:Platform=x64 `
             -p:RuntimeIdentifier=win-x64 `
-            -p:WindowsPackageType=None `
-            -v d 2>&1
+            -p:WindowsPackageType=None
 
       - name: Publish self-contained
         run: |
