@@ -25,8 +25,8 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore src/AgentAIStudio/AgentAIStudio.csproj -p:EnableWindowsTargeting=true
 
-      - name: Build (syntax check)
-        run: dotnet build src/AgentAIStudio/AgentAIStudio.csproj --no-restore -c Release /p:Platform=x64 /p:EnableWindowsTargeting=true
+      - name: Check code formatting
+        run: dotnet format src/AgentAIStudio/AgentAIStudio.csproj --verify-no-changes
 
   build-release:
     needs: validate
