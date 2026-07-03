@@ -52,10 +52,11 @@ jobs:
         run: |
           dotnet build src/AgentAIStudio/AgentAIStudio.csproj `
             --no-restore `
-            -c Release `
+            -c Debug `
             -p:Platform=x64 `
             -p:RuntimeIdentifier=win-x64 `
-            -p:WindowsPackageType=None
+            -p:WindowsPackageType=None `
+            -p:XamlCompilerVerbosity=diagnostic 2>&1
 
       - name: Publish self-contained
         run: |
