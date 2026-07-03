@@ -51,8 +51,7 @@ jobs:
       - name: Build Release x64
         run: |
           dotnet build src/AgentAIStudio/AgentAIStudio.csproj `
-            --no-restore -c Debug `
-            -p:WindowsPackageType=None -p:EnableMsixTooling=false 2>&1
+            --no-restore -c Release -p:WindowsPackageType=None 2>&1
 
       - name: Publish self-contained
         run: |
