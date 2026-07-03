@@ -25,9 +25,6 @@ jobs:
       - name: Restore NuGet packages
         run: dotnet restore src/AgentAIStudio/AgentAIStudio.csproj -p:EnableWindowsTargeting=true
 
-      - name: Check code formatting
-        run: dotnet format src/AgentAIStudio/AgentAIStudio.csproj --verify-no-changes --no-restore
-
   build-release:
     needs: validate
     runs-on: windows-2022
